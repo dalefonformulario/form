@@ -108,8 +108,8 @@
                 
                 <div>
                     <label for="categoria_tema" class="block text-sm font-medium text-slate-700 mb-1">Categoría Principal</label>
-                    <select id="categoria_tema" name="categoria_tema" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
-                        <option value="">Selecciona una categoría...</option>
+                    <select id="categoria_tema" name="categoria_tema" required disabled class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-slate-100 focus:ring-2 focus:ring-blue-500 transition-colors">
+                        <option value="">Primero selecciona el OMV...</option>
                         <!-- Se llena con JS -->
                     </select>
                 </div>
@@ -175,7 +175,7 @@
         // ==========================================
         // 2. BASE DE DATOS LOCAL (Temas y Acciones)
         // ==========================================
-        const dataMap = {
+        const dataMapGeneral = {
             "App y Portal Mi Dalefon": {
                 subtemas: ["Crear cuenta Dalefon", "Instalar App", "Contraseña App", "Acceso Portal Mi Dalefon", "Contraseña Portal Mi Dalefon", "Error al realizar recarga", "Error al solicitar reemplazo", "Error al eliminar cuenta", "Error al crear cuenta", "No llega código verificación", "Error al solicitar factura"],
                 acciones: ["Se envía el código de verificación por otro medio", "Se genera reporte con TI Dalefon", "Se le apoya con cambio de contraseña", "Se le apoya con instalación", "Se le apoya con proceso para eliminar cuenta", "Se le brindan alternativas para recargar", "Otro"]
@@ -242,9 +242,25 @@
             }
         };
 
+        const dataMapBait = {
+            "Activaciones Bait": {
+                subtemas: ["No puedo activar mi eSIM", "No me llegó a mi correo", "No quiero realizar el proceso"],
+                acciones: ["Realicé el reporte a coordinación para su gestión", "Se genera reporte con TI Dalefon", "Se le brinda la información/proceso correspondiente", "Otro"]
+            },
+            "Portabilidades Bait": {
+                subtemas: ["No se realizó mi Portabilidad", "Quiero realizar mi Portabilidad", "Información"],
+                acciones: ["Realicé el reporte a coordinación para su gestión", "Se genera reporte con TI Dalefon", "Se le brinda la información/proceso correspondiente", "Se revisa status y se actualizan los datos de su Portabilidad", "Se le apoya con el proceso de Portabilidad", "Se realiza cancelación de Portabilidad", "Otro"]
+            },
+            "Dudas Bait": {
+                subtemas: ["Dudas con su Portabilidad", "Dudas con su eSIM", "Información", "No funciona correctamente su línea"],
+                acciones: ["Realicé el reporte a coordinación para su gestión", "Se le brinda la información/proceso correspondiente", "Otro"]
+            }
+        };
+
         // ==========================================
         // 3. LÓGICA DE INTERFAZ (Listas Desplegables)
         // ==========================================
+        const selectOMV = document.getElementById('omv');
         const selectCategoria = document.getElementById('categoria_tema');
         const selectSubtema = document.getElementById('subtema');
         const selectAcciones = document.getElementById('acciones');
@@ -254,23 +270,62 @@
         const containerOtroAccion = document.getElementById('container_otro_accion');
         const inputOtroAccion = document.getElementById('acciones_otro');
 
-        // Poblar las categorías principales al iniciar
-        Object.keys(dataMap).forEach(categoria => {
-            let option = document.createElement('option');
-            option.value = categoria;
-            option.textContent = categoria;
-            selectCategoria.appendChild(option);
+        // Evento cuando cambia el OMV
+        selectOMV.addEventListener('change', function() {
+            const omvSeleccionado = this.value;
+            
+            // Limpiar todo lo dependiente
+            selectCategoria.innerHTML = '<option value="">Selecciona una categoría...</option>';
+            selectSubtema.innerHTML = '<option value="">Primero selecciona una categoría...</option>';
+            selectAcciones.innerHTML = '<option value="">Primero selecciona una categoría...</option>';
+            
+            selectSubtema.disabled = true;
+            selectSubtema.classList.add('bg-slate-100');
+            selectSubtema.classList.remove('bg-white');
+            
+            selectAcciones.disabled = true;
+            selectAcciones.classList.add('bg-slate-100');
+            selectAcciones.classList.remove('bg-white');
+
+            containerOtroAccion.classList.add('hidden');
+            inputOtroAccion.required = false;
+            inputOtroAccion.value = '';
+
+            if (omvSeleccionado) {
+                // Activar Categoría
+                selectCategoria.disabled = false;
+                selectCategoria.classList.remove('bg-slate-100');
+                selectCategoria.classList.add('bg-white');
+
+                // Elegir el mapa de datos correcto según el OMV
+                const currentMap = (omvSeleccionado === 'Bait') ? dataMapBait : dataMapGeneral;
+                
+                Object.keys(currentMap).forEach(categoria => {
+                    let option = document.createElement('option');
+                    option.value = categoria;
+                    option.textContent = categoria;
+                    selectCategoria.appendChild(option);
+                });
+            } else {
+                // Si regresa a opción vacía, deshabilitar Categoría
+                selectCategoria.disabled = true;
+                selectCategoria.classList.add('bg-slate-100');
+                selectCategoria.classList.remove('bg-white');
+                selectCategoria.innerHTML = '<option value="">Primero selecciona el OMV...</option>';
+            }
         });
 
         // Evento cuando cambia la Categoría
         selectCategoria.addEventListener('change', function() {
             const categoriaSeleccionada = this.value;
+            const omvSeleccionado = selectOMV.value;
+            const currentMap = (omvSeleccionado === 'Bait') ? dataMapBait : dataMapGeneral;
             
             // Limpiar subtemas y acciones
             selectSubtema.innerHTML = '<option value="">Selecciona un subtema...</option>';
             selectAcciones.innerHTML = '<option value="">Selecciona una acción...</option>';
             
-            if (categoriaSeleccionada && dataMap[categoriaSeleccionada]) {
+            if (categoriaSeleccionada && currentMap[categoriaSeleccionada]) {
                 // Habilitar campos y cambiar estilo
                 selectSubtema.disabled = false;
                 selectSubtema.classList.remove('bg-slate-100');
@@ -286,7 +341,7 @@
                 inputOtroAccion.value = '';
 
                 // Llenar subtemas
-                dataMap[categoriaSeleccionada].subtemas.forEach(sub => {
+                currentMap[categoriaSeleccionada].subtemas.forEach(sub => {
                     let opt = document.createElement('option');
                     opt.value = sub;
                     opt.textContent = sub;
@@ -294,7 +349,7 @@
                 });
 
                 // Llenar acciones
-                dataMap[categoriaSeleccionada].acciones.forEach(acc => {
+                currentMap[categoriaSeleccionada].acciones.forEach(acc => {
                     let opt = document.createElement('option');
                     opt.value = acc;
                     opt.textContent = acc;
@@ -372,6 +427,11 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 
                 // Reiniciar selects dependientes
+                selectCategoria.disabled = true;
+                selectCategoria.innerHTML = '<option value="">Primero selecciona el OMV...</option>';
+                selectCategoria.classList.add('bg-slate-100');
+                selectCategoria.classList.remove('bg-white');
+
                 selectSubtema.disabled = true;
                 selectSubtema.innerHTML = '<option value="">Primero selecciona una categoría...</option>';
                 selectSubtema.classList.add('bg-slate-100');
