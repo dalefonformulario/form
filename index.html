@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Asistencias - Call Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Estilos personalizados para notificaciones */
+        .toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 50;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 17px;
+            transition: visibility 0s, opacity 0.5s linear;
+            opacity: 0;
+        }
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        .toast.success { background-color: #10B981; }
+        .toast.error { background-color: #EF4444; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans text-slate-800">
+
+    <!-- Se cambió 'overflow-hidden' a 'relative' para permitir que el sticky funcione correctamente en todos los navegadores -->
+    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg relative">
+        
+        <!-- Se agregaron las clases 'sticky top-0 z-40 rounded-t-xl shadow-sm' para dejarlo fijo -->
+        <div style="background-color:#33105d" class="sticky top-0 z-40 bg-white/95 backdrop-blur-sm p-4 md:p-6 border-b border-slate-200 flex flex-col items-center justify-center text-center rounded-t-xl shadow-sm">
+            <img src="https://dalefon.mx/_astro/logo-letters-white.CSuzUwxq_CS3Kj.webp" alt="Dalefon Logo">
+            <h1 style="font-family:ui-sans-serif,system-ui,sans-serif;color:#FFFFFF;font-weight:600;padding:10px;font-size:18pt">Registro de Asistencias</h1>
+            <p style="font-family:ui-sans-serif,system-ui,sans-serif;color:#FFFFFF;font-size:12pt">Herramienta de administración - Soporte y ATN</p>
+        </div>
+
+        <form id="asistenciaForm" class="p-6 md:p-8 space-y-6">
+            
+            <!-- 1. Nombre del agente -->
+            <div>
+                <label for="agente" class="block text-sm font-semibold text-slate-700 mb-1">1. Nombre del agente</label>
+                <select id="agente" name="agente" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                    <option value="">Selecciona un agente...</option>
+                    <option value="Blanca Estela Ciriaco Saavedra">Blanca Estela Ciriaco Saavedra</option>
+                    <option value="Brenda Ivón García García">Brenda Ivón García García</option>
+                    <option value="Estephany Ailyn Becerril Garduño">Estephany Ailyn Becerril Garduño</option>
+                    <option value="Heidi Nataly Cienfuegos Flores">Heidi Nataly Cienfuegos Flores</option>
+                    <option value="Jair Flores Díaz">Jair Flores Díaz</option>
+                    <option value="Jessica Adame Gutiérrez">Jessica Adame Gutiérrez</option>
+                    <option value="Juan de Dios Salazar Morales">Juan de Dios Salazar Morales</option>
+                    <option value="Lázaro Argüelles Silva">Lázaro Argüelles Silva</option>
+                    <option value="Lorena de la Paz Arellano">Lorena de la Paz Arellano</option>
+                    <option value="Miguel Ángel Guzmán Robles">Miguel Ángel Guzmán Robles</option>
+                    <option value="Naydelin Gabriel Ciprés">Naydelin Gabriel Ciprés</option>
+                    <option value="Ricardo Sánchez Cortés">Ricardo Sánchez Cortés</option>
+                    <option value="Roberto Andrés Dauguet Sahagún">Roberto Andrés Dauguet Sahagún</option>
+                </select>
+            </div>
+
+            <!-- 2. URL o Teléfono de asistencia -->
+            <div>
+                <label for="contacto_id" class="block text-sm font-semibold text-slate-700 mb-1">2. URL o Teléfono de asistencia</label>
+                <input type="text" id="contacto_id" name="contacto_id" required placeholder="5512345678 o URL" 
+                    class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 3. Medio de contacto -->
+                <div>
+                    <label for="medio" class="block text-sm font-semibold text-slate-700 mb-1">3. Medio de contacto</label>
+                    <select id="medio" name="medio" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                        <option value="">Selecciona un medio...</option>
+                        <option value="Teléfono">Teléfono</option>
+                        <option value="Botmaker">Botmaker</option>
+                        <option value="Correo">Correo</option>
+                    </select>
+                </div>
+
+                <!-- 4. OMV del cliente -->
+                <div>
+                    <label for="omv" class="block text-sm font-semibold text-slate-700 mb-1">4. OMV del cliente</label>
+                    <select id="omv" name="omv" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                        <option value="">Selecciona un OMV...</option>
+                        <option value="Dalefon">Dalefon</option>
+                        <option value="Bienestar">Bienestar</option>
+                        <option value="Bait">Bait</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- DIVISOR -->
+            <hr class="border-slate-200">
+
+            <!-- 5. Tema de asistencia (Dividido en Categoría y Subtema para mejor usabilidad) -->
+            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
+                <h3 class="font-semibold text-slate-800 text-lg mb-2">5. Clasificación del Tema</h3>
+                
+                <div>
+                    <label for="categoria_tema" class="block text-sm font-medium text-slate-700 mb-1">Categoría Principal</label>
+                    <select id="categoria_tema" name="categoria_tema" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                        <option value="">Selecciona una categoría...</option>
+                        <!-- Se llena con JS -->
+                    </select>
+                </div>
+
+                <div>
+                    <label for="subtema" class="block text-sm font-medium text-slate-700 mb-1">Subtema Específico</label>
+                    <select id="subtema" name="subtema" required disabled class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-slate-100 focus:ring-2 focus:ring-blue-500 transition-colors">
+                        <option value="">Primero selecciona una categoría...</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 6. Acciones realizadas -->
+            <div>
+                <label for="acciones" class="block text-sm font-semibold text-slate-700 mb-1">6. Acciones realizadas</label>
+                <p class="text-xs text-slate-500 mb-2">Las opciones disponibles dependen de la Categoría seleccionada arriba.</p>
+                <select id="acciones" name="acciones" required disabled class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-slate-100 focus:ring-2 focus:ring-blue-500 transition-colors">
+                    <option value="">Primero selecciona una categoría...</option>
+                </select>
+
+                <!-- Campo oculto para "Otro" -->
+                <div id="container_otro_accion" class="mt-3 hidden">
+                    <label for="acciones_otro" class="block text-sm font-medium text-slate-700 mb-1">Especifica la acción realizada</label>
+                    <input type="text" id="acciones_otro" name="acciones_otro" placeholder="Describe la acción..." 
+                        class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                </div>
+            </div>
+
+            <!-- 7. ¿Se finalizó con éxito? -->
+            <div>
+                <label for="estatus" class="block text-sm font-semibold text-slate-700 mb-1">7. ¿Se finalizó con éxito la asistencia?</label>
+                <select id="estatus" name="estatus" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                    <option value="">Selecciona el resultado...</option>
+                    <option value="Asistencia resuelta">Asistencia resuelta</option>
+                    <option value="El cliente dejó de contestar">El cliente dejó de contestar</option>
+                    <option value="Se contactará después">Se contactará después</option>
+                    <option value="Asistencia inconclusa por hora de salida">Asistencia inconclusa por hora de salida</option>
+                    <option value="Escalado a segundo nivel">Escalado a segundo nivel</option>
+                    <option value="Cliente molesto">Cliente molesto</option>
+                    <option value="No fue posible brindar una resolución">No fue posible brindar una resolución debido a causas ajenas a Dalefon</option>
+                </select>
+            </div>
+
+            <!-- Botón Submit -->
+            <div class="pt-4">
+                <button type="submit" id="btnSubmit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all flex justify-center items-center">
+                    <i class="fa-regular fa-paper-plane mr-2"></i> Registrar Asistencia
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Contenedor del Toast -->
+    <div id="toast" class="toast">Mensaje aquí</div>
+
+    <script>
+        // ==========================================
+        // 1. CONFIGURACIÓN: URL de tu Google Web App
+        // ==========================================
+        // REEMPLAZA ESTA URL CON LA QUE TE DE GOOGLE APPS SCRIPT
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYnNhmNnmn5f5cclIYW15wmNOEv0Vy39towWgSgNTqR6iSX6hN6VDDivzc9fECUV-xNQ/exec'; 
+
+        // ==========================================
+        // 2. BASE DE DATOS LOCAL (Temas y Acciones)
+        // ==========================================
+        const dataMap = {
+            "App y Portal Mi Dalefon": {
+                subtemas: ["Crear cuenta Dalefon", "Instalar App", "Contraseña App", "Acceso Portal Mi Dalefon", "Contraseña Portal Mi Dalefon", "Error al realizar recarga", "Error al solicitar reemplazo", "Error al eliminar cuenta", "Error al crear cuenta", "No llega código verificación", "Error al solicitar factura"],
+                acciones: ["Se envía el código de verificación por otro medio", "Se genera reporte con TI Dalefon", "Se le apoya con cambio de contraseña", "Se le apoya con instalación", "Se le apoya con proceso para eliminar cuenta", "Se le brindan alternativas para recargar", "Otro"]
+            },
+            "Calidad del Servicio": {
+                subtemas: ["Seguimiento de reporte", "Mantenimiento de red", "Llamadas Postventa", "Roamer permanente", "Mala atención"],
+                acciones: ["En espera de respuesta Altán", "Le informé sobre los tiempos y pasos a seguir del proceso", "Realicé el reporte a coordinación para su gestión", "Se genera reporte con TI Dalefon", "Se le brinda la información/proceso correspondiente", "Otro"]
+            },
+            "eSIM internacional": {
+                subtemas: ["Falla en la eSIM", "Error en activación", "Información", "eSIM comprada por error", "Reenvío de liga de QR", "Aclaración de consumos"],
+                acciones: ["Generé reporte de Airalo", "Realicé el reporte a coordinación para su gestión", "Le proporcioné la liga de su eSIM", "Se le informó el uso de su consumo de datos", "Otro"]
+            },
+            "Facturación": {
+                subtemas: ["Solicitud de factura recarga", "Solicitud de factura compra", "Cancelar factura", "Envío de factura", "Aclaración de factura"],
+                acciones: ["Realicé el reporte a coordinación para su gestión", "Se le brinda la información/proceso correspondiente", "Se realizó la factura correspondiente", "Otro"]
+            },
+            "Información": {
+                subtemas: ["Compatibilidad de equipo", "Aclaración de saldos", "Oferta comercial", "Cobertura", "Roaming Internacional", "Subdistribuidores", "Otras áreas", "Horarios de atención"],
+                acciones: ["Le informé sobre los tiempos y pasos a seguir del proceso", "Se le solicitan sus datos y se comparten con el área correspondiente", "Realicé el reporte a coordinación para su gestión", "Se le brinda la información/proceso correspondiente", "Otro"]
+            },
+            "Portabilidad": {
+                subtemas: ["Información", "Portabilidad (Física)", "Estado de portabilidad", "Errores de portabilidad", "Cancelar portabilidad"],
+                acciones: ["Se revisa estatus y se actualizan los datos de su portabilidad", "Se le apoya con el proceso de portabilidad", "Se le brinda la información/proceso correspondiente", "Se realiza cancelación de portabilidad", "Se solicita regularización de portabilidad", "Otro"]
+            },
+            "Promociones": {
+                subtemas: ["Oferta comercial", "Dinámicas/Concursos", "Bono no aplicado", "Promociones vigentes", "Publicidad"],
+                acciones: ["Se le brinda la información/proceso correspondiente", "Generé reporte de Remedy", "Se le informaron las promociones vigentes", "Otro"]
+            },
+            "Provisión de servicios": {
+                subtemas: ["Línea Suspendida", "Activación manual de línea", "Bloqueo robo o extravío", "Desbloqueo robo o extravío", "Cambio de lada", "Unbarring manual", "PIN y/o PUK", "Errores en buzón de voz", "Errores en desvío de llamadas", "Gestión de servicio de voz"],
+                acciones: ["Revisión de bolsas disponibles", "Se activa el buzón de voz", "Generé reporte de Remedy", "Realicé el reporte a coordinación para su gestión", "Se activó el desvío de llamadas", "Se desactiva buzón de voz", "Se genera reset en la clave de buzón de voz", "Se le brinda la información/proceso correspondiente", "Otro"]
+            },
+            "Recargas": {
+                subtemas: ["Información medios de recarga", "Recarga en App", "Recarga Portal Mi Dalefon", "Recarga STP", "Recarga Portal Cautivo", "Recarga en dalefon.mx", "Aclaraciones recarga App", "Aclaraciones recarga Portal Mi Dalefon", "Aclaraciones recarga STP", "Aclaraciones recarga Portal Cautivo", "Aclaraciones recarga dalefon.mx", "Aclaraciones recarga Establecimiento", "Aclaraciones recarga Chatbot", "Problemas con recarga", "Cargos duplicados"],
+                acciones: ["Validé y solicité recarga a coordinación", "Depositó monto incorrecto y cuenta con saldo a favor", "Depositó monto incorrecto y pagó el resto", "Ofrecí información referente a oferta comercial", "Se genera reporte con TI Dalefon", "Se le brinda su clabe STP", "Se le informa sobre error general y tiempo de espera", "Otro"]
+            },
+            "Reemplazos": {
+                subtemas: ["Reemplazo eSIM", "Reemplazo SIM", "Número de orden no encontrado", "Error al realizar pago", "Correo no vinculado", "Problemas con equipo", "Línea no activa"],
+                acciones: ["Se le aplica reemplazo por autorización de coordinación", "El equipo es chino, se aplica reemplazo por SIM física", "El equipo no es compatible con eSIM, se aplica reemplazo por SIM física", "El equipo no es compatible, se le indica intentar en otro dispositivo", "El equipo no está liberado, se le indica intentar en otro dispositivo", "Se reenvía la eSIM al cliente", "El equipo tiene reporte de robo, se le indica intentar en otro dispositivo", "Se genera reporte con TI Dalefon", "Otro"]
+            },
+            "Renovación Automática": {
+                subtemas: ["RA no aplicada", "Cobro después de Port-Out", "Aclaración de términos", "Desactivar RA", "Cliente no reconoce RA", "Información", "Cobro doble"],
+                acciones: ["Se genera reporte con TI Dalefon", "Se le brinda la información y se procede con el reembolso", "Se le brinda la información/proceso correspondiente", "Realicé el reporte a coordinación para su gestión", "Otro"]
+            },
+            "SIM/eSIM": {
+                subtemas: ["Reenvío eSIM", "Seguimiento envío SIM", "Activación SIM/eSIM", "Cambio de eSIM por SIM", "Cambio de SIM por eSIM", "Error en proceso de compra", "Compra duplicada", "Compra incorrecta"],
+                acciones: ["Apoyo en la activación de su línea", "Realicé el reporte a coordinación para su gestión", "Se genera reporte con TI Dalefon", "Se le apoya a concluir la compra", "Se le apoya a crear su cuenta para iniciar sesión", "Se reenvía la eSIM al cliente", "Otro"]
+            },
+            "Soporte técnico": {
+                subtemas: ["Configuración básica", "Sin servicio total", "Sin servicio de datos", "Llamadas salientes", "Llamadas entrantes", "Lentitud de navegación", "SMS salientes", "SMS entrantes", "SMS A2P", "Mala calidad de llamadas", "Sin señal"],
+                acciones: ["Activar compartir datos", "Conf. básica (APN, Roaming Int., Modo de Red)", "Desactivamos y activamos VoLTE", "Forzado de red", "Generé reporte de Remedy", "Revisión de cobertura", "Revisión de equipo liberado", "Revisión de reporte de robo/extravío", "Revisión de saturación", "Se configuró el SMSC (Centro de SMS)", "Se le brinda la información/proceso correspondiente", "Se le pide actualizar a la última versión", "Otro"]
+            },
+            "Trámite": {
+                subtemas: ["Recuperación de línea", "Predesactivación contracargo", "Reanudación contracargo", "Portabilidad (Moral)", "Portabilidad (Recuperación)", "Actualización de datos", "Portabilidad (Reverso)", "Reembolso"],
+                acciones: ["Se le brinda la información/proceso correspondiente", "Realicé el reporte a coordinación para su gestión", "Realicé el reporte a operaciones para su gestión", "Otro"]
+            },
+            "Venta": {
+                subtemas: ["Exitosa", "Pospuesta", "Equipo no compatible", "Equipo no liberado", "Zona sin cobertura", "No le interesa", "Menor de edad", "Cotización"],
+                acciones: ["El cliente es menor de edad y no quiso que sus tutores se vincularan", "No cuenta con cobertura y no procedió con la venta", "Preguntó sobre una cotización y se comunicará después", "Se le brinda la información/proceso correspondiente", "Se realizó la venta de forma exitosa", "Su equipo no es compatible y no procedió con la venta", "Otro"]
+            },
+            "Vinculación de línea": {
+                subtemas: ["Fallas desde la App", "Fallas desde portal web", "Vinculación de terceros", "Dudas sobre requisitos", "Dudas con el proceso", "Desvinculación", "Estado de vinculación", "Aclaración de líneas vinculadas", "Vinculación persona moral"],
+                acciones: ["Realicé el reporte a coordinación para su gestión", "Se genera reporte con Operaciones", "Se genera reporte con TI Dalefon", "Se le brinda la información/proceso correspondiente", "Otro"]
+            }
+        };
+
+        // ==========================================
+        // 3. LÓGICA DE INTERFAZ (Listas Desplegables)
+        // ==========================================
+        const selectCategoria = document.getElementById('categoria_tema');
+        const selectSubtema = document.getElementById('subtema');
+        const selectAcciones = document.getElementById('acciones');
+        const form = document.getElementById('asistenciaForm');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        const containerOtroAccion = document.getElementById('container_otro_accion');
+        const inputOtroAccion = document.getElementById('acciones_otro');
+
+        // Poblar las categorías principales al iniciar
+        Object.keys(dataMap).forEach(categoria => {
+            let option = document.createElement('option');
+            option.value = categoria;
+            option.textContent = categoria;
+            selectCategoria.appendChild(option);
+        });
+
+        // Evento cuando cambia la Categoría
+        selectCategoria.addEventListener('change', function() {
+            const categoriaSeleccionada = this.value;
+            
+            // Limpiar subtemas y acciones
+            selectSubtema.innerHTML = '<option value="">Selecciona un subtema...</option>';
+            selectAcciones.innerHTML = '<option value="">Selecciona una acción...</option>';
+            
+            if (categoriaSeleccionada && dataMap[categoriaSeleccionada]) {
+                // Habilitar campos y cambiar estilo
+                selectSubtema.disabled = false;
+                selectSubtema.classList.remove('bg-slate-100');
+                selectSubtema.classList.add('bg-white');
+                
+                selectAcciones.disabled = false;
+                selectAcciones.classList.remove('bg-slate-100');
+                selectAcciones.classList.add('bg-white');
+
+                // Ocultar campo Otro por si estaba visible
+                containerOtroAccion.classList.add('hidden');
+                inputOtroAccion.required = false;
+                inputOtroAccion.value = '';
+
+                // Llenar subtemas
+                dataMap[categoriaSeleccionada].subtemas.forEach(sub => {
+                    let opt = document.createElement('option');
+                    opt.value = sub;
+                    opt.textContent = sub;
+                    selectSubtema.appendChild(opt);
+                });
+
+                // Llenar acciones
+                dataMap[categoriaSeleccionada].acciones.forEach(acc => {
+                    let opt = document.createElement('option');
+                    opt.value = acc;
+                    opt.textContent = acc;
+                    selectAcciones.appendChild(opt);
+                });
+            } else {
+                // Deshabilitar si se regresa a opción vacía
+                selectSubtema.disabled = true;
+                selectSubtema.classList.add('bg-slate-100');
+                selectSubtema.classList.remove('bg-white');
+                
+                selectAcciones.disabled = true;
+                selectAcciones.classList.add('bg-slate-100');
+                selectAcciones.classList.remove('bg-white');
+            }
+        });
+
+        // Evento cuando cambia la Acción (para detectar "Otro")
+        selectAcciones.addEventListener('change', function() {
+            if (this.value === 'Otro') {
+                containerOtroAccion.classList.remove('hidden');
+                inputOtroAccion.required = true; // Hacerlo obligatorio
+            } else {
+                containerOtroAccion.classList.add('hidden');
+                inputOtroAccion.required = false;
+                inputOtroAccion.value = ''; // Limpiar si se arrepiente y elige otra opción
+            }
+        });
+
+        // ==========================================
+        // 4. LÓGICA DE ENVÍO DE DATOS
+        // ==========================================
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Advertencia si no se ha configurado el script
+            if(GOOGLE_SCRIPT_URL.includes('TU_ID_DE_SCRIPT')) {
+                showToast("Por favor, configura tu GOOGLE_SCRIPT_URL en el código HTML primero.", "error");
+                return;
+            }
+
+            // Cambiar estado del botón
+            const textOriginal = btnSubmit.innerHTML;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Guardando...';
+            btnSubmit.disabled = true;
+            btnSubmit.classList.add('opacity-70');
+
+            // Recopilar los datos del formulario
+            const formData = new FormData(form);
+            
+            // Añadir fecha y hora actual automáticamente
+            const fechaActual = new Date().toLocaleString('es-MX');
+            formData.append('fecha_hora', fechaActual);
+
+            // Si se seleccionó "Otro", actualizar el valor de "acciones" antes de enviar
+            const accionSeleccionada = formData.get('acciones');
+            if (accionSeleccionada === 'Otro') {
+                const textoOtro = formData.get('acciones_otro');
+                formData.set('acciones', 'Otro: ' + textoOtro);
+            }
+
+            try {
+                // Enviar datos usando fetch. Se usa 'no-cors' para evitar bloqueos del navegador hacia Google Sheets
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                });
+
+                // Como usamos no-cors, asumimos éxito si la promesa se resuelve
+                showToast("✅ Asistencia registrada exitosamente", "success");
+                form.reset();
+                
+                // Hacer scroll hacia arriba suavemente
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Reiniciar selects dependientes
+                selectSubtema.disabled = true;
+                selectSubtema.innerHTML = '<option value="">Primero selecciona una categoría...</option>';
+                selectSubtema.classList.add('bg-slate-100');
+                
+                selectAcciones.disabled = true;
+                selectAcciones.innerHTML = '<option value="">Primero selecciona una categoría...</option>';
+                selectAcciones.classList.add('bg-slate-100');
+
+                // Reiniciar campo Otro
+                containerOtroAccion.classList.add('hidden');
+                inputOtroAccion.required = false;
+                inputOtroAccion.value = '';
+
+            } catch (error) {
+                console.error('Error:', error);
+                showToast("❌ Error al guardar. Revisa tu conexión.", "error");
+            } finally {
+                // Restaurar botón
+                btnSubmit.innerHTML = textOriginal;
+                btnSubmit.disabled = false;
+                btnSubmit.classList.remove('opacity-70');
+            }
+        });
+
+        // Función auxiliar para mostrar notificaciones flotantes (Toasts)
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.className = `toast show ${type}`;
+            setTimeout(function(){ 
+                toast.className = toast.className.replace("show", ""); 
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
