@@ -35,22 +35,20 @@
 </head>
 <body class="bg-slate-50 min-h-screen p-4 md:p-8 font-sans text-slate-800">
 
-    <!-- Se cambió 'overflow-hidden' a 'relative' para permitir que el sticky funcione correctamente en todos los navegadores -->
-    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg relative">
-        
-        <!-- Se agregaron las clases 'sticky top-0 z-40 rounded-t-xl shadow-sm' para dejarlo fijo -->
-        <div style="background-color:#33105d" class="sticky top-0 z-40 bg-white/95 backdrop-blur-sm p-4 md:p-6 border-b border-slate-200 flex flex-col items-center justify-center text-center rounded-t-xl shadow-sm">
-            <img src="https://dalefon.mx/_astro/logo-letters-white.CSuzUwxq_CS3Kj.webp" alt="Dalefon Logo">
-            <h1 style="font-family:ui-sans-serif,system-ui,sans-serif;color:#FFFFFF;font-weight:600;padding:10px;font-size:18pt">Registro de Asistencias</h1>
-            <p style="font-family:ui-sans-serif,system-ui,sans-serif;color:#FFFFFF;font-size:12pt">Herramienta de administración - Soporte y ATN</p>
+    <!-- PANTALLA DE SELECCIÓN DE AGENTE (LOGIN) -->
+    <div id="loginScreen" class="max-w-md mx-auto bg-white rounded-xl shadow-lg relative mt-10 md:mt-20 overflow-hidden">
+        <div style="background-color:#33105d" class="p-6 border-b border-slate-200 flex flex-col items-center justify-center text-center">
+            <img src="https://dalefon.mx/_astro/logo-letters-white.CSuzUwxq_CS3Kj.webp" alt="Dalefon Logo" class="h-10 md:h-12 mb-2">
+            <h1 class="text-white font-semibold text-lg md:text-xl">Registro de Asistencias</h1>
         </div>
-
-        <form id="asistenciaForm" class="p-6 md:p-8 space-y-6">
-            
-            <!-- 1. Nombre del agente -->
+        <div class="p-8 space-y-6">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800">¡Hola!</h2>
+                <p class="text-slate-500 mt-2">Selecciona tu nombre para comenzar tu turno.</p>
+            </div>
             <div>
-                <label for="agente" class="block text-sm font-semibold text-slate-700 mb-1">1. Nombre del agente</label>
-                <select id="agente" name="agente" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
+                <label for="agenteLogin" class="block text-sm font-semibold text-slate-700 mb-1">Tu nombre completo</label>
+                <select id="agenteLogin" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white shadow-sm text-base">
                     <option value="">Selecciona un agente...</option>
                     <option value="Blanca Estela Ciriaco Saavedra">Blanca Estela Ciriaco Saavedra</option>
                     <option value="Brenda Ivón García García">Brenda Ivón García García</option>
@@ -67,18 +65,46 @@
                     <option value="Roberto Andrés Dauguet Sahagún">Roberto Andrés Dauguet Sahagún</option>
                 </select>
             </div>
+            <button id="btnContinuar" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all flex justify-center items-center">
+                Continuar <i class="fa-solid fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
 
-            <!-- 2. URL o Teléfono de asistencia -->
+
+    <!-- PANTALLA DEL FORMULARIO PRINCIPAL (Oculta por defecto) -->
+    <div id="mainFormScreen" class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg relative hidden mt-4 md:mt-8">
+        
+        <!-- Encabezado Fijo -->
+        <div style="background-color:#33105d" class="sticky top-0 z-40 p-4 md:p-6 border-b border-slate-200 flex flex-col items-center justify-center text-center rounded-t-xl shadow-md">
+            <!-- Botón de Cerrar Sesión -->
+            <div class="absolute top-4 right-4 md:top-6 md:right-6">
+                <button id="btnCambiarAgente" class="text-white/90 hover:text-white text-xs md:text-sm font-medium bg-black/20 hover:bg-black/40 px-3 py-1.5 rounded-full transition-colors flex items-center shadow-sm">
+                    <i class="fa-solid fa-user-circle mr-1.5"></i> <span id="nombreAgenteHeader" class="hidden md:inline mr-1"></span> (Cambiar)
+                </button>
+            </div>
+            
+            <img src="https://dalefon.mx/_astro/logo-letters-white.CSuzUwxq_CS3Kj.webp" alt="Dalefon Logo" class="h-10 md:h-12 mb-2">
+            <h1 class="text-white font-semibold text-lg md:text-xl">Registro de Asistencias</h1>
+            <p class="text-white/80 text-sm mt-1">Herramienta de administración - Soporte y ATN</p>
+        </div>
+
+        <form id="asistenciaForm" class="p-6 md:p-8 space-y-6">
+            
+            <!-- Campo oculto para enviar a Google Sheets -->
+            <input type="hidden" id="agente" name="agente" value="">
+
+            <!-- 1. URL o Teléfono de asistencia -->
             <div>
-                <label for="contacto_id" class="block text-sm font-semibold text-slate-700 mb-1">2. URL o Teléfono de asistencia</label>
+                <label for="contacto_id" class="block text-sm font-semibold text-slate-700 mb-1">1. URL o Teléfono de asistencia</label>
                 <input type="text" id="contacto_id" name="contacto_id" required placeholder="5512345678 o URL" 
                     class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- 3. Medio de contacto -->
+                <!-- 2. Medio de contacto -->
                 <div>
-                    <label for="medio" class="block text-sm font-semibold text-slate-700 mb-1">3. Medio de contacto</label>
+                    <label for="medio" class="block text-sm font-semibold text-slate-700 mb-1">2. Medio de contacto</label>
                     <select id="medio" name="medio" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
                         <option value="">Selecciona un medio...</option>
                         <option value="Teléfono">Teléfono</option>
@@ -87,9 +113,9 @@
                     </select>
                 </div>
 
-                <!-- 4. OMV del cliente -->
+                <!-- 3. OMV del cliente -->
                 <div>
-                    <label for="omv" class="block text-sm font-semibold text-slate-700 mb-1">4. OMV del cliente</label>
+                    <label for="omv" class="block text-sm font-semibold text-slate-700 mb-1">3. OMV del cliente</label>
                     <select id="omv" name="omv" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
                         <option value="">Selecciona un OMV...</option>
                         <option value="Dalefon">Dalefon</option>
@@ -102,15 +128,14 @@
             <!-- DIVISOR -->
             <hr class="border-slate-200">
 
-            <!-- 5. Tema de asistencia (Dividido en Categoría y Subtema para mejor usabilidad) -->
+            <!-- 4. Tema de asistencia -->
             <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
-                <h3 class="font-semibold text-slate-800 text-lg mb-2">5. Clasificación del Tema</h3>
+                <h3 class="font-semibold text-slate-800 text-lg mb-2">4. Clasificación del Tema</h3>
                 
                 <div>
                     <label for="categoria_tema" class="block text-sm font-medium text-slate-700 mb-1">Categoría Principal</label>
                     <select id="categoria_tema" name="categoria_tema" required disabled class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-slate-100 focus:ring-2 focus:ring-blue-500 transition-colors">
                         <option value="">Primero selecciona el OMV...</option>
-                        <!-- Se llena con JS -->
                     </select>
                 </div>
 
@@ -122,9 +147,9 @@
                 </div>
             </div>
 
-            <!-- 6. Acciones realizadas -->
+            <!-- 5. Acciones realizadas -->
             <div>
-                <label for="acciones" class="block text-sm font-semibold text-slate-700 mb-1">6. Acciones realizadas</label>
+                <label for="acciones" class="block text-sm font-semibold text-slate-700 mb-1">5. Acciones realizadas</label>
                 <p class="text-xs text-slate-500 mb-2">Las opciones disponibles dependen de la Categoría seleccionada arriba.</p>
                 <select id="acciones" name="acciones" required disabled class="w-full px-4 py-2 border border-slate-300 rounded-lg bg-slate-100 focus:ring-2 focus:ring-blue-500 transition-colors">
                     <option value="">Primero selecciona una categoría...</option>
@@ -138,9 +163,9 @@
                 </div>
             </div>
 
-            <!-- 7. ¿Se finalizó con éxito? -->
+            <!-- 6. ¿Se finalizó con éxito? -->
             <div>
-                <label for="estatus" class="block text-sm font-semibold text-slate-700 mb-1">7. ¿Se finalizó con éxito la asistencia?</label>
+                <label for="estatus" class="block text-sm font-semibold text-slate-700 mb-1">6. ¿Se finalizó con éxito la asistencia?</label>
                 <select id="estatus" name="estatus" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white">
                     <option value="">Selecciona el resultado...</option>
                     <option value="Asistencia resuelta">Asistencia resuelta</option>
@@ -169,11 +194,10 @@
         // ==========================================
         // 1. CONFIGURACIÓN: URL de tu Google Web App
         // ==========================================
-        // REEMPLAZA ESTA URL CON LA QUE TE DE GOOGLE APPS SCRIPT
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYnNhmNnmn5f5cclIYW15wmNOEv0Vy39towWgSgNTqR6iSX6hN6VDDivzc9fECUV-xNQ/exec'; 
 
         // ==========================================
-        // 2. BASE DE DATOS LOCAL (Temas y Acciones)
+        // 2. BASES DE DATOS LOCALES (Temas y Acciones)
         // ==========================================
         const dataMapGeneral = {
             "App y Portal Mi Dalefon": {
@@ -214,7 +238,7 @@
             },
             "Reemplazos": {
                 subtemas: ["Reemplazo eSIM", "Reemplazo SIM", "Número de orden no encontrado", "Error al realizar pago", "Correo no vinculado", "Problemas con equipo", "Línea no activa"],
-                acciones: ["Se le aplica reemplazo por autorización de coordinación", "El equipo es chino, se aplica reemplazo por SIM física", "El equipo no es compatible con eSIM, se aplica reemplazo por SIM física", "El equipo no es compatible, se le indica intentar en otro dispositivo", "El equipo no está liberado, se le indica intentar en otro dispositivo", "Se reenvía la eSIM al cliente", "El equipo tiene reporte de robo, se le indica intentar en otro dispositivo", "Se genera reporte con TI Dalefon", "Otro"]
+                acciones: ["Se le brinda la información/proceso correspondiente", "Se le aplica reemplazo por autorización de coordinación", "El equipo es chino, se aplica reemplazo por SIM física", "El equipo no es compatible con eSIM, se aplica reemplazo por SIM física", "El equipo no es compatible, se le indica intentar en otro dispositivo", "El equipo no está liberado, se le indica intentar en otro dispositivo", "Se reenvía la eSIM al cliente", "El equipo tiene reporte de robo, se le indica intentar en otro dispositivo", "Se genera reporte con TI Dalefon", "Otro"]
             },
             "Renovación Automática": {
                 subtemas: ["RA no aplicada", "Cobro después de Port-Out", "Aclaración de términos", "Desactivar RA", "Cliente no reconoce RA", "Información", "Cobro doble"],
@@ -258,18 +282,73 @@
         };
 
         // ==========================================
-        // 3. LÓGICA DE INTERFAZ (Listas Desplegables)
+        // 3. VARIABLES DEL DOM
         // ==========================================
+        // Elementos de Sesión (Login)
+        const loginScreen = document.getElementById('loginScreen');
+        const mainFormScreen = document.getElementById('mainFormScreen');
+        const btnContinuar = document.getElementById('btnContinuar');
+        const agenteLogin = document.getElementById('agenteLogin');
+        const agenteHidden = document.getElementById('agente');
+        const nombreAgenteHeader = document.getElementById('nombreAgenteHeader');
+        const btnCambiarAgente = document.getElementById('btnCambiarAgente');
+
+        // Elementos del Formulario
         const selectOMV = document.getElementById('omv');
         const selectCategoria = document.getElementById('categoria_tema');
         const selectSubtema = document.getElementById('subtema');
         const selectAcciones = document.getElementById('acciones');
         const form = document.getElementById('asistenciaForm');
         const btnSubmit = document.getElementById('btnSubmit');
-
         const containerOtroAccion = document.getElementById('container_otro_accion');
         const inputOtroAccion = document.getElementById('acciones_otro');
 
+        // ==========================================
+        // 4. LÓGICA DE INICIO DE SESIÓN
+        // ==========================================
+        function checkAgenteSession() {
+            const agenteGuardado = localStorage.getItem('dalefon_agente_actual');
+            if (agenteGuardado) {
+                iniciarSesion(agenteGuardado);
+            } else {
+                loginScreen.classList.remove('hidden');
+                mainFormScreen.classList.add('hidden');
+            }
+        }
+
+        function iniciarSesion(nombre) {
+            localStorage.setItem('dalefon_agente_actual', nombre);
+            agenteHidden.value = nombre;
+            nombreAgenteHeader.textContent = nombre.split(' ')[0];
+            loginScreen.classList.add('hidden');
+            mainFormScreen.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        btnContinuar.addEventListener('click', () => {
+            const seleccionado = agenteLogin.value;
+            if (seleccionado) {
+                iniciarSesion(seleccionado);
+            } else {
+                showToast("Por favor, selecciona tu nombre antes de continuar", "error");
+            }
+        });
+
+        btnCambiarAgente.addEventListener('click', () => {
+            if(confirm("¿Seguro que deseas cambiar de agente?")) {
+                localStorage.removeItem('dalefon_agente_actual');
+                agenteHidden.value = '';
+                agenteLogin.value = '';
+                loginScreen.classList.remove('hidden');
+                mainFormScreen.classList.add('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // ==========================================
+        // 5. LÓGICA DE FORMULARIO DINÁMICO
+        // ==========================================
+        
         // Evento cuando cambia el OMV
         selectOMV.addEventListener('change', function() {
             const omvSeleccionado = this.value;
@@ -371,16 +450,16 @@
         selectAcciones.addEventListener('change', function() {
             if (this.value === 'Otro') {
                 containerOtroAccion.classList.remove('hidden');
-                inputOtroAccion.required = true; // Hacerlo obligatorio
+                inputOtroAccion.required = true;
             } else {
                 containerOtroAccion.classList.add('hidden');
                 inputOtroAccion.required = false;
-                inputOtroAccion.value = ''; // Limpiar si se arrepiente y elige otra opción
+                inputOtroAccion.value = '';
             }
         });
 
         // ==========================================
-        // 4. LÓGICA DE ENVÍO DE DATOS
+        // 6. LÓGICA DE ENVÍO DE DATOS
         // ==========================================
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -412,16 +491,18 @@
             }
 
             try {
-                // Enviar datos usando fetch. Se usa 'no-cors' para evitar bloqueos del navegador hacia Google Sheets
+                // Enviar datos usando fetch.
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     body: formData
                 });
 
-                // Como usamos no-cors, asumimos éxito si la promesa se resuelve
                 showToast("✅ Asistencia registrada exitosamente", "success");
                 form.reset();
+                
+                // IMPORTANTE: Al hacer reset, el input oculto también se borra. Hay que volverlo a llenar.
+                agenteHidden.value = localStorage.getItem('dalefon_agente_actual');
                 
                 // Hacer scroll hacia arriba suavemente
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -465,6 +546,13 @@
                 toast.className = toast.className.replace("show", ""); 
             }, 3000);
         }
+
+        // ==========================================
+        // 7. INICIALIZACIÓN
+        // ==========================================
+        // Al cargar la página, verificar si ya hay sesión iniciada
+        checkAgenteSession();
+
     </script>
 </body>
 </html>
